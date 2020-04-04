@@ -5,17 +5,6 @@ from generator.event import Event
 from generator.AvailableEvents import AvailableEvents
 
 
-# def _get_all_possible_events() -> List[tuple]:
-#     all_possible = []
-#     for trigger in triggers:
-#         for event in triggers[trigger]:
-#             if type(event) is tuple:
-#                 all_possible.append(((trigger, event[0]), (trigger, event[1])))
-#             else:
-#                 all_possible.append((trigger, event))
-#     return all_possible
-
-
 def _generate_events(n: int, start_time: int) -> Iterable[Tuple[Event, bool]]:
     available_events = AvailableEvents()
     current_time = start_time
@@ -24,12 +13,11 @@ def _generate_events(n: int, start_time: int) -> Iterable[Tuple[Event, bool]]:
         if type(next_event[0]) is tuple:
             yield Event(current_time, next_event[0][0], next_event[0][1]), False
             second_event = Event(current_time + int(random() * 3600), next_event[1][0], next_event[1][1])
-            available_events.change_last(second_event)
+            available_events.change_second(second_event)
             yield second_event, True
         else:
             yield Event(current_time, next_event[0], next_event[1]), False
         current_time += int(random() * 3600)
-        last_event = next_event
 
 
 def _generate_events_in_order(n: int, start_time: int) -> Iterable[Event]:

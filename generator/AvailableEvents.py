@@ -20,21 +20,18 @@ class AvailableEvents:
     def __hash__(self):
         return hash(self.events)
 
-    def change_last(self, event):
+    def change_second(self, event):
         self.second_event = event
 
     def generate(self):
         if self.first_event is not None:
             while True:
                 next_event = self.events[int(random() * len(self.events))]
-                if next_event[0] is 'temp_up' or 'temp_down':
+                if next_event[1] is 'temp_up' or 'temp_down':
                     break
                 elif next_event is not self.first_event and not self.second_event:
                     for i in next_event:
-                        if next_event[i][0] is not self.first_event[i][0] \
-                                and self.first_event[i][1] \
-                                and self.second_event[i][0] \
-                                and self.second_event[i][0]:
+                        if next_event[i] is not self.first_event[0] or self.first_event[1]:
                             break
         else:
             next_event = self.events[int(random() * len(self.events))]
