@@ -7,13 +7,16 @@ from generator.event import Event
 
 def _get_all_possible_events() -> List[tuple]:
     all_possible = []
-    for trigger in triggers:
-        for event in triggers[trigger]:
-            if type(event) is tuple:
-                all_possible.append(((trigger, event[0]), (trigger, event[1])))
-            else:
-                all_possible.append((trigger, event))
-    return all_possible
+    rooms = []
+    for room in triggers:
+        rooms.append(room)
+        for trigger in triggers[room]:
+            for event in triggers[room][trigger]:
+                if type(event) is tuple:
+                    all_possible.append(((trigger, event[0]), (trigger, event[1])))
+                else:
+                    all_possible.append((trigger, event))
+    return all_possible, rooms
 
 
 def _generate_events(n: int, start_time: int, events_pool: List[tuple]) -> Iterable[Tuple[Event, bool]]:
