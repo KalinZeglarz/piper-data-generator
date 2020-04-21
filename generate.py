@@ -7,22 +7,23 @@ from typing import Tuple
 from generator.api import generate_events
 
 
-def _get_args() -> Tuple[int, int, int]:
+def _get_args() -> Tuple[int, int, int, int]:
     parser = ArgumentParser()
     parser.add_argument('n', help='number of events to generate', type=int)
+    parser.add_argument('u', help='number of users of house', type=int)
     parser.add_argument('-t', help='time of first event [OPTIONAL]', type=int)
     parser.add_argument('-f', help='format of output [OPTIONAL]', type=str, default='csv')
     args = parser.parse_args()
-    return args.n, args.t, args.f
+    return args.n, args.u, args.t, args.f
 
 
 if __name__ == '__main__':
-    n, start_time, out_format = _get_args()
+    n, users_n, start_time, out_format = _get_args()
 
     if start_time is not None:
         events = generate_events(n, start_time)
     else:
-        events = generate_events(n)
+        events = generate_events(n, users_n)
 
     if out_format == 'csv':
         with stdout as f:

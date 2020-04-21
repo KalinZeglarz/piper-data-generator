@@ -2,10 +2,12 @@ from random import random
 from typing import List, Iterable, Tuple
 
 from generator.config.basic import triggers
-from generator.event import Event
+from generator.config.time import HOUR
+from generator.model.event import Event
+from generator.model.user import User
 
 
-def _get_all_possible_events() -> List[tuple]:
+def _get_all_possible_events() -> Tuple[List[tuple], List[str]]:
     all_possible = []
     rooms = []
     for room in triggers:
@@ -19,21 +21,45 @@ def _get_all_possible_events() -> List[tuple]:
     return all_possible, rooms
 
 
-def _generate_events(n: int, start_time: int, events_pool: List[tuple]) -> Iterable[Tuple[Event, bool]]:
-    current_time = start_time
-    for _ in range(n):
+def _generate_users(n: int, current_time: int, rooms: List[str]) -> List[User]:
+    return [User(f'user_{i}', rooms[int(random() * len(rooms))], current_time, current_time) for i in range(n)]
+
+
+def _generate_events_for_user(user: User, current_time: int, events_pool: List[tuple]) -> List[Tuple[Event, bool]]:
+    if user.next_event_at <= current_time:
         next_event = events_pool[int(random() * len(events_pool))]
         if type(next_event[0]) is tuple:
-            yield Event(current_time, next_event[0][0], next_event[0][1]), False
-            yield Event(current_time + int(random() * 3600), next_event[1][0], next_event[1][1]), True
+            return [
+                (Event(user.next_event_at, next_event[0][0], next_event[0][1]), False),
+                (Event(user.next_event_at + int(random() * HOUR), next_event[1][0], next_event[1][1]), True)
+            ]
         else:
-            yield Event(current_time, next_event[0], next_event[1]), False
-        current_time += int(random() * 3600)
+            return [(Event(user.next_event_at, next_event[0], next_event[1]), False)]
+    else:
+        return []
 
 
-def _generate_events_in_order(n: int, start_time: int, events_pool: List[tuple]) -> Iterable[Event]:
+def _generate_events(n: int, users_n: int, start_time: int, events_pool: List[tuple], rooms: List[str]) -> Iterable[Tuple[Event, bool]]:
+    current_time = start_time
+    users = _generate_users(users_n, current_time, rooms)
+    generated = 0
+    while generated < n:
+        for user in users:
+            new_events = _generate_events_for_user(user, current_time, events_pool)
+            for event in new_events:
+                yield event
+            user.update(current_time)
+
+            generated += len(new_events)
+            if generated >= n:
+                break
+
+        current_time += 60
+
+
+def _generate_events_in_order(n: int, users_n: int, start_time: int, events_pool: List[tuple], rooms: List[str]) -> Iterable[Event]:
     buffer = []
-    for event, scheduled in _generate_events(n, start_time, events_pool):
+    for event, scheduled in _generate_events(n, users_n, start_time, events_pool, rooms):
         if not scheduled:
             while len(buffer) > 0 and event.time > buffer[0].time:
                 yield buffer.pop(0)
