@@ -42,9 +42,6 @@ class User:
 
         self.state = choice(states)
 
-        if self.state == User.State.ASLEEP:
-            self.state = User.State.IN
-
         if self.state is User.State.IN:
             self.change_state_at += int(random() * HOUR)
             self.room = choice(self._rooms)
