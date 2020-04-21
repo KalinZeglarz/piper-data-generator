@@ -17,12 +17,13 @@ class User:
         (State.ASLEEP, 10),
     ]
 
-    def __init__(self, name: str, room: str, change_state_at: int, next_event_at: int) -> None:
+    def __init__(self, name: str, room: str, change_state_at: int, next_event_at: int, rooms: []) -> None:
         self.name = name
         self.state = User.State.IN
         self.room = room
         self.change_state_at = change_state_at
         self.next_event_at = next_event_at
+        self._rooms = rooms
 
     def update(self, current_time: int):
         if current_time >= self.change_state_at:
@@ -46,6 +47,7 @@ class User:
 
         if self.state is User.State.IN:
             self.change_state_at += int(random() * HOUR)
+            self.room = choice(self._rooms)
         elif self.state is User.State.OUT:
             self.change_state_at += int(random() * HOUR)
             self.next_event_at = self.change_state_at
