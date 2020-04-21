@@ -7,7 +7,7 @@ from typing import Tuple
 from generator.api import generate_events
 
 
-def _get_args() -> Tuple[int, int, int, int]:
+def _get_args() -> Tuple[int, int, int, str]:
     parser = ArgumentParser()
     parser.add_argument('n', help='number of events to generate', type=int)
     parser.add_argument('u', help='number of users of house', type=int)
