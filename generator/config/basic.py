@@ -9,13 +9,15 @@ _events = {
 }
 
 
-def _room(name: str, trigs: Dict[str, List[str]]) -> List[Tuple[str, List[str]]]:
-    return [(f'{name if name is not None else "general"}_{n}', e) for n, e in trigs.items()]
+def _room(name: str, trigs: Dict[str, List[str]]) -> Tuple[str, List[Tuple[str, List[str]]]]:
+    return name, \
+           [(f'{name}_{n}', e) for n, e in trigs.items()]
 
 
-def _triggers(*trigs: List[Tuple[str, List[str]]]) -> Dict[str, List[str]]:
-    rooms = [(n, e) for trig in trigs for n, e in trig]
-    return {n: e for n, e in rooms}
+def _triggers(*trigs: Tuple[str, List[Tuple[str, List[str]]]]) -> Dict[str, Dict[str, List[str]]]:
+    trigs_dict = {room: events for room, events in trigs}
+    rooms = {room: {n: e for n, e in events} for room, events in trigs_dict.items()}
+    return {room: events for room, events in rooms.items()}
 
 
 triggers = _triggers(
