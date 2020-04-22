@@ -4,6 +4,9 @@ class Event:
         self.trigger = trigger
         self.name = name
 
+    def __getitem__(self, item):
+        return self.time, self.trigger, self.name
+
     def __str__(self):
         return f'Event(time={self.time}, trigger={self.trigger}, name={self.name})'
 
