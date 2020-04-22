@@ -6,7 +6,7 @@ Utility for generating random data to be used in further ml
 ### cli
 command:
 ```shell script
-python generate.py NUMBER_OF_EVENTS_TO_GENERATE [-t TIME_OF_FIRST_EVENT] [-f FORMAT_OF_OUTPUT]
+python generate.py NUMBER_OF_EVENTS_TO_GENERATE NUMBER_OF_USER_TO_CONSIDER [-t TIME_OF_FIRST_EVENT] [-f FORMAT_OF_OUTPUT]
 ```
 sample:
 ```shell script
@@ -34,6 +34,11 @@ sample:
 {"time": 1585420727, "trigger": "gate_2_remote_2", "name": "gate_close"}
 {"time": 1585422518, "trigger": "gate_2_remote_1", "name": "gate_close"}
 
+```
+
+help
+```shell script
+python generate.py --help
 ```
 ### python api
 tba 
