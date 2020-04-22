@@ -3,7 +3,7 @@ from generator.config.basic import triggers
 from generator.model.event import Event
 
 
-class Events:
+class _EventsManager:
     def __init__(self):
         self.events: Dict[str, List[any]] = self._get_all_possible_events()
         self.current_events: Set[Event] = set()
@@ -48,6 +48,6 @@ class Events:
         events_pool = self.events[room]
         for next_event in events_pool:
             if type(next_event) is tuple:
-                if next_event[1] not in set(map(lambda e: (e.trigger, e.name), self.current_events)):
+                if next_event[1] not in map(lambda e: (e.trigger, e.name), self.current_events):
                     return next_event
         return None
