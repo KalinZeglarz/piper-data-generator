@@ -12,10 +12,10 @@ class Events:
     def __hash__(self):
         return hash(self.events)
 
-    def block_event(self, event):
+    def block_event(self, event: Event):
         self.current_events.append(event)
 
-    def release_event(self, event):
+    def release_event(self, event: Event):
         self.current_events.remove(event)
 
     def update_blocked(self, current_time: int):
