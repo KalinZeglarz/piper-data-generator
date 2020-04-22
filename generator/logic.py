@@ -3,7 +3,7 @@ from typing import List, Iterable, Tuple
 
 from generator.config.time import HOUR
 from generator.model.event import Event
-from generator.model.events import Events
+from generator.EventsManager import _EventsManager
 from generator.model.user import User
 
 
@@ -12,9 +12,9 @@ def _generate_users(n: int, current_time: int, rooms: List[str]) -> List[User]:
 
 
 def _generate_events(n: int, users_n: int, start_time: int) -> Iterable[Event]:
-    events = Events()
+    events = _EventsManager()
     current_time = start_time
-    users = _generate_users(users_n, current_time, events.get_events_keys())
+    users = _generate_users(users_n, current_time, events.get_rooms())
     generated = 0
     while generated < n:
         for user in users:
@@ -30,14 +30,17 @@ def _generate_events(n: int, users_n: int, start_time: int) -> Iterable[Event]:
         current_time += 60
 
 
-def _generate_events_for_user(user: User, current_time: int, events: Events) -> List[Tuple[Event, bool]]:
+def _generate_events_for_user(user: User, current_time: int, events: _EventsManager) -> List[Tuple[Event, bool]]:
     if user.next_event_at <= current_time:
         next_event = events.generate(user.room, current_time)
+        if next_event is None:
+            user.next_event_at = user.change_state_at
+            return []
         if type(next_event[0]) is tuple:
             start_event = Event(user.next_event_at, next_event[0][0], next_event[0][1])
             end_event = Event(user.next_event_at + int(random() * HOUR), next_event[1][0], next_event[1][1])
-            # events.block_event(start_event)
-            # events.block_event(end_event)
+            events.block_event(start_event)
+            events.block_event(end_event)
             return [
                 (start_event, False),
                 (end_event, True)
