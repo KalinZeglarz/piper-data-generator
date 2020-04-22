@@ -24,8 +24,10 @@ triggers = _triggers(
     _room(
         'outdoor',
         {
-            'gate_1_switch': _events['gates'],
-            'gate_2_switch': _events['gates'],
+            'gate_1_remote_1': _events['gates'],
+            'gate_2_remote_1': _events['gates'],
+            'gate_1_remote_2': _events['gates'],
+            'gate_2_remote_2': _events['gates'],
             'light_1_sensor': _events['lights'],
             'light_2_sensor': _events['lights']
         }
